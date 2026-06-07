@@ -7,12 +7,9 @@ on:
     branches: [main, master]
 
 env:
-  NODE_VERSION: '20'
+  NODE_VERSION: '22'
 
 jobs:
-  # ════════════════════════════════════════════════════════════════════════════
-  # JOB 1 — Lint & Type-check
-  # ════════════════════════════════════════════════════════════════════════════
   lint:
     name: 🔍 Lint & TypeCheck
     runs-on: ubuntu-latest
@@ -34,9 +31,6 @@ jobs:
       - name: Run ESLint
         run: npm run lint
 
-  # ════════════════════════════════════════════════════════════════════════════
-  # JOB 2 — Tests + Coverage + Artifacts
-  # ════════════════════════════════════════════════════════════════════════════
   test:
     name: 🧪 Tests & Coverage
     runs-on: ubuntu-latest
@@ -45,7 +39,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # Required for SonarCloud blame info
+          fetch-depth: 0
 
       - name: Setup Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v4
@@ -61,7 +55,7 @@ jobs:
         env:
           NODE_ENV: test
 
-      - name: Upload HTML coverage report (Artifact)
+      - name: Upload HTML coverage report
         uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -69,7 +63,7 @@ jobs:
           path: coverage/lcov-report/
           retention-days: 30
 
-      - name: Upload XML reports (Artifact — for SonarQube)
+      - name: Upload XML reports (SonarQube)
         uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -81,7 +75,7 @@ jobs:
             coverage/clover.xml
           retention-days: 30
 
-      - name: Upload full coverage dir (Artifact)
+      - name: Upload full coverage dir
         uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -89,9 +83,6 @@ jobs:
           path: coverage/
           retention-days: 14
 
-  # ════════════════════════════════════════════════════════════════════════════
-  # JOB 3 — SonarCloud Analysis
-  # ════════════════════════════════════════════════════════════════════════════
   sonar:
     name: 📊 SonarCloud Analysis
     runs-on: ubuntu-latest
@@ -103,7 +94,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Node.js
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
@@ -112,7 +103,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run tests to regenerate reports
+      - name: Run tests to generate coverage
         run: npm run test:ci
         env:
           NODE_ENV: test
@@ -122,19 +113,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args: >
-            -Dsonar.projectKey=${{ github.repository_owner }}_task-manager
-            -Dsonar.organization=${{ github.repository_owner }}
-            -Dsonar.sources=src
-            -Dsonar.tests=tests
-            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-            -Dsonar.testExecutionReportPaths=coverage/junit.xml
-            -Dsonar.qualitygate.wait=true
 
-  # ════════════════════════════════════════════════════════════════════════════
-  # JOB 4 — Docker Build (optional, on push to main only)
-  # ════════════════════════════════════════════════════════════════════════════
   docker:
     name: 🐳 Docker Build
     runs-on: ubuntu-latest
@@ -147,7 +126,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build Docker image (no push — validation only)
+      - name: Build Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
