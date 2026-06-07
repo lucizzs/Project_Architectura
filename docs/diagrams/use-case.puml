@@ -1,0 +1,68 @@
+@startuml TaskManager_UseCaseDiagram
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Користувач" as User
+actor "Власник проєкту" as Owner
+actor "Адміністратор системи" as Admin
+
+rectangle "Task Manager System" {
+  usecase "UC-01: Реєстрація" as UC01
+  usecase "UC-02: Авторизація" as UC02
+  usecase "UC-03: Перегляд профілю" as UC03
+
+  usecase "UC-04: Створення проєкту" as UC04
+  usecase "UC-05: Редагування проєкту" as UC05
+  usecase "UC-06: Видалення проєкту" as UC06
+  usecase "UC-07: Додавання учасника" as UC07
+  usecase "UC-08: Видалення учасника" as UC08
+  usecase "UC-09: Перегляд учасників" as UC09
+
+  usecase "UC-10: Створення завдання" as UC10
+  usecase "UC-11: Редагування завдання" as UC11
+  usecase "UC-12: Зміна статусу" as UC12
+  usecase "UC-13: Призначення виконавця" as UC13
+  usecase "UC-14: Пошук та фільтрація" as UC14
+  usecase "UC-15: Видалення завдання" as UC15
+  usecase "UC-16: Пріоритизація (Strategy)" as UC16
+  usecase "UC-17: Нарахування штрафів (Strategy)" as UC17
+  usecase "UC-18: Bulk-оновлення статусу" as UC18
+
+  usecase "UC-19: Додавання коментаря" as UC19
+  usecase "UC-20: Редагування коментаря" as UC20
+  usecase "UC-21: Видалення коментаря" as UC21
+
+  usecase "UC-22: Перегляд статистики" as UC22
+  usecase "UC-23: Перегляд прострочених" as UC23
+}
+
+User --> UC01
+User --> UC02
+User --> UC03
+
+User --> UC10
+User --> UC11
+User --> UC12
+User --> UC13
+User --> UC14
+User --> UC19
+User --> UC20
+User --> UC21
+User --> UC22
+User --> UC23
+
+Owner --> UC04
+Owner --> UC05
+Owner --> UC06
+Owner --> UC07
+Owner --> UC08
+Owner --> UC09
+Owner --> UC15
+Owner --> UC16
+Owner --> UC17
+Owner --> UC18
+
+UC10 ..> UC16 : <<include>>
+UC17 ..> UC14 : <<extend>>
+UC12 ..> UC22 : <<extend>>
+@enduml

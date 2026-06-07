@@ -1,0 +1,151 @@
+@startuml TaskManager_ClassDiagram
+skinparam classAttributeIconSize 0
+skinparam groupInheritance 2
+
+' ─── STRATEGY PATTERN ──────────────────────────────────────────────────────────
+interface ITaskPriorityStrategy {
+  +calculateScore(task: Task): number
+}
+interface IPenaltyStrategy {
+  +calculatePenalty(task: Task): number
+}
+
+class DeadlineBasedPriorityStrategy implements ITaskPriorityStrategy {
+  +calculateScore(task): number
+}
+class ComplexityBasedPriorityStrategy implements ITaskPriorityStrategy {
+  +calculateScore(task): number
+}
+class HybridPriorityStrategy implements ITaskPriorityStrategy {
+  -deadlineWeight: number
+  -complexityWeight: number
+  +calculateScore(task): number
+}
+
+class LinearPenaltyStrategy implements IPenaltyStrategy {
+  +calculatePenalty(task): number
+}
+class ExponentialPenaltyStrategy implements IPenaltyStrategy {
+  +calculatePenalty(task): number
+}
+class TieredPenaltyStrategy implements IPenaltyStrategy {
+  +calculatePenalty(task): number
+}
+
+class TaskPriorityContext {
+  -strategy: ITaskPriorityStrategy
+  +setStrategy(s): void
+  +rankTasks(tasks): Task[]
+}
+class PenaltyContext {
+  -strategy: IPenaltyStrategy
+  +setStrategy(s): void
+  +applyPenalty(task): number
+}
+
+TaskPriorityContext o-- ITaskPriorityStrategy
+PenaltyContext o-- IPenaltyStrategy
+
+' ─── OBSERVER PATTERN ──────────────────────────────────────────────────────────
+interface IObserver {
+  +handle(event): void
+}
+
+class EventBus {
+  -{static} instance: EventBus
+  -subscribers: Map<string, IObserver[]>
+  -log: EventPayload[]
+  +{static} getInstance(): EventBus
+  +{static} reset(): void
+  +subscribe(event, observer): void
+  +unsubscribe(event, observer): void
+  +notify(event, payload): void
+  +getLog(): EventPayload[]
+}
+
+class NotificationObserver implements IObserver {
+  -notifications: Notification[]
+  +handle(event): void
+  +getNotifications(): Notification[]
+}
+class AuditLogObserver implements IObserver {
+  -entries: AuditEntry[]
+  +handle(event): void
+  +getAuditLog(): AuditEntry[]
+}
+class OverdueCheckerObserver implements IObserver {
+  +handle(event): void
+}
+
+EventBus "1" o-- "0..*" IObserver
+
+' ─── REPOSITORIES ──────────────────────────────────────────────────────────────
+interface IUserRepository {
+  +findById(id): Promise<User|null>
+  +findByEmail(email): Promise<User|null>
+  +findAll(): Promise<User[]>
+  +create(data): Promise<User>
+  +update(id, data): Promise<User>
+  +delete(id): Promise<void>
+}
+interface IProjectRepository {
+  +findById(id): Promise<Project|null>
+  +create(data): Promise<Project>
+  +addMember(pId, uId, role): Promise<ProjectMember>
+  +findMembers(pId, userMap?): Promise<Array>
+}
+interface ITaskRepository {
+  +findById(id): Promise<Task|null>
+  +create(data): Promise<Task>
+  +findManyByProject(pId, filter): Promise<PaginatedResult>
+  +findOverdue(): Promise<Task[]>
+}
+
+class InMemoryUserRepository implements IUserRepository {
+  -items: Map<string, User>
+}
+class InMemoryProjectRepository implements IProjectRepository {
+  -items: Map<string, Project>
+  -members: Map<string, ProjectMember>
+}
+class InMemoryTaskRepository implements ITaskRepository {
+  -items: Map<string, Task>
+}
+
+' ─── SERVICES ──────────────────────────────────────────────────────────────────
+class AuthService {
+  -users: IUserRepository
+  +register(dto): Promise<User>
+  +login(dto): Promise<{user, token}>
+  +getProfile(id): Promise<User>
+}
+class ProjectService {
+  -projects: IProjectRepository
+  -users: IUserRepository
+  -eventBus: EventBus
+  +create(userId, dto): Promise<Project>
+  +addMember(ownerId, pId, uId): Promise<void>
+  +getMembers(userId, pId): Promise<MemberList>
+}
+class TaskService {
+  -tasks: ITaskRepository
+  -projects: IProjectRepository
+  -eventBus: EventBus
+  -priorityCtx: TaskPriorityContext
+  -penaltyCtx: PenaltyContext
+  +create(userId, pId, dto): Promise<Task>
+  +updateStatus(userId, id, status): Promise<Task>
+  +rankByPriority(userId, pId): Promise<Task[]>
+  +bulkUpdateStatus(userId, ids, status): Promise<Task[]>
+}
+
+AuthService --> IUserRepository
+ProjectService --> IProjectRepository
+ProjectService --> IUserRepository
+ProjectService --> EventBus
+TaskService --> ITaskRepository
+TaskService --> IProjectRepository
+TaskService --> EventBus
+TaskService --> TaskPriorityContext
+TaskService --> PenaltyContext
+@enduml

@@ -1,0 +1,92 @@
+@startuml TaskManager_DomainModel
+skinparam classAttributeIconSize 0
+
+class User {
+  +id: string
+  +name: string
+  +email: string
+  +passwordHash: string
+  +isActive: boolean
+  +createdAt: Date
+  +updatedAt: Date
+}
+
+class Project {
+  +id: string
+  +name: string
+  +description: string | null
+  +ownerId: string
+  +createdAt: Date
+  +updatedAt: Date
+}
+
+class ProjectMember {
+  +projectId: string
+  +userId: string
+  +role: OWNER | MEMBER | VIEWER
+  +joinedAt: Date
+}
+
+class Task {
+  +id: string
+  +title: string
+  +description: string | null
+  +status: TaskStatus
+  +priority: TaskPriority
+  +dueDate: Date | null
+  +projectId: string
+  +assigneeId: string | null
+  +createdById: string
+  +estimatedHours: number | null
+  +actualHours: number | null
+  +tags: string[]
+  +createdAt: Date
+  +updatedAt: Date
+}
+
+class Comment {
+  +id: string
+  +content: string
+  +taskId: string
+  +authorId: string
+  +createdAt: Date
+  +updatedAt: Date
+}
+
+class TaskHistory {
+  +id: string
+  +taskId: string
+  +userId: string
+  +field: string
+  +oldValue: string | null
+  +newValue: string | null
+  +changedAt: Date
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  REVIEW
+  DONE
+  CANCELLED
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+User "1" -- "0..*" Project : owns >
+User "0..*" -- "0..*" Project : member of >
+Project "1" *-- "0..*" Task : contains >
+Task "1" *-- "0..*" Comment : has >
+Task "1" *-- "0..*" TaskHistory : tracks >
+User "1" -- "0..*" Task : assigned to >
+User "1" -- "0..*" Comment : writes >
+ProjectMember -- Project
+ProjectMember -- User
+Task -- TaskStatus
+Task -- TaskPriority
+@enduml
