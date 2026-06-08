@@ -1,155 +1,202 @@
-# 📋 Task Manager — In-Memory Architecture
+# Task Manager — In-Memory Architecture
 
-[![CI](https://github.com/YOUR_GITHUB_USERNAME/task-manager/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_GITHUB_USERNAME/task-manager/actions)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=YOUR_GITHUB_USERNAME_task-manager&metric=alert_status)](https://sonarcloud.io/dashboard?id=YOUR_GITHUB_USERNAME_task-manager)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=YOUR_GITHUB_USERNAME_task-manager&metric=coverage)](https://sonarcloud.io/dashboard?id=YOUR_GITHUB_USERNAME_task-manager)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=YOUR_GITHUB_USERNAME_task-manager&metric=bugs)](https://sonarcloud.io/dashboard?id=YOUR_GITHUB_USERNAME_task-manager)
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=YOUR_GITHUB_USERNAME_task-manager&metric=code_smells)](https://sonarcloud.io/dashboard?id=YOUR_GITHUB_USERNAME_task-manager)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?logo=typescript)](https://www.typescriptlang.org/)
-[![Tests](https://img.shields.io/badge/tests-224%20passed-brightgreen)](./tests)
-[![Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen)](./coverage/lcov-report/index.html)
+[![CI](https://github.com/lucizzs/Project_Architectura/actions/workflows/ci.yml/badge.svg)](https://github.com/lucizzs/Project_Architectura/actions)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=lucizzs_Project_Architectura&metric=alert_status)](https://sonarcloud.io/dashboard?id=lucizzs_Project_Architectura)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=lucizzs_Project_Architectura&metric=coverage)](https://sonarcloud.io/dashboard?id=lucizzs_Project_Architectura)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=lucizzs_Project_Architectura&metric=bugs)](https://sonarcloud.io/dashboard?id=lucizzs_Project_Architectura)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=lucizzs_Project_Architectura&metric=code_smells)](https://sonarcloud.io/dashboard?id=lucizzs_Project_Architectura)
 
-> **Курсова робота** · Загорянський М. В. · ФеП-31 · ЛНУ ім. Івана Франка  
-> Система управління завданнями на TypeScript з повністю In-Memory архітектурою, GoF патернами, 224 тестами та CI/CD пайплайном.
+Система управління завданнями реалізована на TypeScript з повністю In-Memory архітектурою, патернами проектування GoF, 224 модульними тестами та автоматизованим CI/CD пайплайном.
 
 ---
 
-## 📐 Архітектура
+## Зміст
 
-```
-task-manager/
-├── src/
-│   ├── domain/
-│   │   ├── models.ts          # Сутності: User, Project, Task, Comment, TaskHistory
-│   │   └── errors.ts          # AppError, NotFoundError, ForbiddenError, ConflictError...
-│   ├── repositories/
-│   │   └── interfaces.ts      # IUserRepository, IProjectRepository, ITaskRepository...
-│   ├── storage/               # In-Memory імплементації
-│   │   ├── base.store.ts      # BaseInMemoryStore<T> — Map + clone + generateId
-│   │   ├── user.store.ts      # InMemoryUserRepository
-│   │   ├── project.store.ts   # InMemoryProjectRepository (з Map members)
-│   │   ├── task.store.ts      # InMemoryTaskRepository (filter, sort, pagination)
-│   │   └── comment.store.ts   # InMemoryCommentRepository + InMemoryTaskHistoryRepository
-│   ├── strategies/
-│   │   └── priority.strategy.ts  # GoF Strategy: 3 алгоритми пріоритету + 3 штрафи
-│   ├── observers/
-│   │   └── event-bus.ts       # GoF Observer + Singleton: EventBus + 3 observers
-│   ├── services/
-│   │   ├── auth.service.ts    # Реєстрація, авторизація (PBKDF2 + HS256-like JWT)
-│   │   ├── project.service.ts # CRUD проєктів + управління учасниками
-│   │   ├── task.service.ts    # CRUD завдань + пріоритизація + штрафи
-│   │   └── comment-stats.service.ts  # Коментарі + статистика
-│   └── utils/
-│       └── crypto.utils.ts    # hashPassword, verifyPassword, signToken, verifyToken
-├── tests/
-│   ├── helpers.ts             # Фабрики: buildUser, buildProject, buildTask, buildComment
-│   └── unit/
-│       ├── repositories/stores.test.ts      # ~65 тестів — всі 5 сховищ
-│       ├── strategies/priority.strategy.test.ts  # ~45 тестів — всі 6 стратегій
-│       ├── observers/event-bus.test.ts       # ~25 тестів — EventBus + 3 observers
-│       ├── services/services.test.ts         # ~80 тестів — Auth/Project/Task/Comment/Stats
-│       └── utils/crypto.test.ts              # ~20 тестів — crypto + validation
-├── docs/
-│   └── diagrams/
-│       ├── use-case.puml      # Діаграма прецедентів (PlantUML)
-│       ├── domain-model.puml  # Модель предметної області
-│       ├── class-diagram.puml # Діаграма класів з GoF патернами
-│       └── README.md          # Опис діаграм та бізнес-логіки
-├── .cursor/rules/
-│   ├── architecture.md        # AI-правила: In-Memory архітектура
-│   └── testing.md             # AI-правила: стратегія тестування
-├── .github/workflows/
-│   └── ci.yml                 # CI: lint → test → SonarCloud → Docker
-├── .cursorrules               # Глобальні AI-правила
-├── Dockerfile                 # Ізольований запуск тестів
-├── sonar-project.properties   # SonarCloud конфігурація
-└── README.md
-```
+- [Опис системи](#опис-системи)
+- [Архітектура](#архітектура)
+- [Патерни проектування](#патерни-проектування)
+- [Структура репозиторію](#структура-репозиторію)
+- [Метрики якості](#метрики-якості)
+- [CI/CD](#cicd)
+- [Запуск проекту](#запуск-проекту)
+- [UML діаграми](#uml-діаграми)
 
 ---
 
-## 🏗️ GoF Патерни
+## Опис системи
 
-### Strategy — алгоритми пріоритизації та штрафів
+Система вирішує задачу управління завданнями в рамках проектів з підтримкою кількох користувачів. Ключові бізнес-алгоритми:
+
+**Пріоритизація завдань** — три змінні стратегії ранжування:
+- за терміновістю дедлайну (чим ближче дедлайн, тим вищий пріоритет)
+- за складністю (враховує оцінку годин та обсяг опису)
+- гібридна (60% вага дедлайну + 40% вага складності)
+
+**Нарахування штрафів за прострочення** — три змінні стратегії:
+- лінійна: 1 бал за кожен день прострочення
+- експоненційна: 2 в степені кількості днів, максимум 1024
+- ступінчаста: 5 / 15 / 30 / 50 балів залежно від тривалості прострочення
+
+**Подієва система** — автоматичні сповіщення та аудит при кожній зміні стану завдання або проекту.
+
+Актори системи: звичайний користувач (реєстрація, управління завданнями, коментарі) та власник проекту (управління проектом, учасниками, bulk-операції).
+
+---
+
+## Архітектура
+
+Проект розділений на чіткі шари з інверсією залежностей через інтерфейси.
+
+```
+src/
+  domain/
+    models.ts              # Сутності: User, Project, Task, Comment, TaskHistory
+    errors.ts              # Ієрархія помилок: AppError, NotFoundError, ForbiddenError...
+  repositories/
+    interfaces.ts          # Контракти: IUserRepository, IProjectRepository, ITaskRepository...
+  storage/
+    base.store.ts          # Базовий клас InMemoryStore з Map, clone(), generateId()
+    user.store.ts          # InMemoryUserRepository
+    project.store.ts       # InMemoryProjectRepository
+    task.store.ts          # InMemoryTaskRepository з фільтрацією, сортуванням, пагінацією
+    comment.store.ts       # InMemoryCommentRepository, InMemoryTaskHistoryRepository
+  strategies/
+    priority.strategy.ts   # GoF Strategy: алгоритми пріоритету та штрафів
+  observers/
+    event-bus.ts           # GoF Observer + Singleton: EventBus та три observers
+  services/
+    auth.service.ts        # Реєстрація, авторизація (PBKDF2 + власна JWT реалізація)
+    project.service.ts     # CRUD проектів, управління учасниками
+    task.service.ts        # CRUD завдань, пріоритизація, штрафи, bulk-оновлення
+    comment-stats.service.ts  # Коментарі та статистика по проекту
+  utils/
+    crypto.utils.ts        # hashPassword, verifyPassword, signToken, verifyToken
+```
+
+Всі дані зберігаються в `Map<string, T>` в оперативній пам'яті. Зовнішні бази даних та API не використовуються. Кожен тест отримує свіжі екземпляри репозиторіїв, що забезпечує повну ізоляцію.
+
+---
+
+## Патерни проектування
+
+### Strategy
+
+Реалізовано в `src/strategies/priority.strategy.ts`. Дозволяє підміняти алгоритм пріоритизації та нарахування штрафів без зміни коду сервісу.
 
 ```typescript
-// Три алгоритми пріоритету:
+// Підміна алгоритму в runtime
 const ctx = new TaskPriorityContext(new HybridPriorityStrategy());
-const ranked = ctx.rankTasks(tasks); // score = 0.6*deadline + 0.4*complexity
+const ranked = ctx.rankTasks(tasks);
 
-// Три алгоритми штрафів:
-const penalty = new PenaltyContext(new ExponentialPenaltyStrategy());
-const pts = penalty.applyPenalty(overdueTask); // 2^days, max 1024
+ctx.setStrategy(new DeadlineBasedPriorityStrategy());
+const reranked = ctx.rankTasks(tasks);
 ```
 
-| Стратегія | Алгоритм |
-|-----------|----------|
-| `DeadlineBasedPriorityStrategy` | Вага за терміновістю дедлайну |
-| `ComplexityBasedPriorityStrategy` | Вага за estimatedHours + довжиною опису |
-| `HybridPriorityStrategy` | 60% deadline + 40% complexity |
-| `LinearPenaltyStrategy` | 1 бал/день прострочення |
-| `ExponentialPenaltyStrategy` | 2^days, максимум 1024 |
-| `TieredPenaltyStrategy` | Ступінчасті рівні: 5/15/30/50 балів |
+Інтерфейси: `ITaskPriorityStrategy`, `IPenaltyStrategy`.  
+Реалізації пріоритету: `DeadlineBasedPriorityStrategy`, `ComplexityBasedPriorityStrategy`, `HybridPriorityStrategy`.  
+Реалізації штрафів: `LinearPenaltyStrategy`, `ExponentialPenaltyStrategy`, `TieredPenaltyStrategy`.
 
-### Observer + Singleton — подієва шина
+### Observer
+
+Реалізовано в `src/observers/event-bus.ts`. EventBus є Singleton і координує підписників на події системи.
 
 ```typescript
-const bus = EventBus.getInstance(); // Singleton
+const bus = EventBus.getInstance();
 bus.subscribe('task.created', new NotificationObserver());
 bus.subscribe('task.overdue', new AuditLogObserver());
 
-// Автоматично викликається у TaskService:
-bus.notify('task.status_changed', { taskId, oldStatus, newStatus });
+// Автоматично викликається в TaskService при кожній зміні:
+bus.notify('task.status_changed', { taskId, oldStatus, newStatus, userId });
 ```
 
-**Події:** `task.created`, `task.updated`, `task.deleted`, `task.status_changed`,  
-`task.overdue`, `task.assigned`, `task.escalated`, `project.created`, `member.added`
+Observers: `NotificationObserver` (in-app сповіщення), `AuditLogObserver` (аудит всіх змін), `OverdueCheckerObserver` (автоматичне виявлення прострочених завдань).
+
+Події: `task.created`, `task.updated`, `task.deleted`, `task.status_changed`, `task.overdue`, `task.assigned`, `project.created`, `project.deleted`, `member.added`, `member.removed`.
+
+### Singleton
+
+`EventBus.getInstance()` гарантує єдиний екземпляр шини подій. `EventBus.reset()` використовується в тестах для ізоляції.
 
 ---
 
-## 📊 Метрики якості
+## Структура репозиторію
+
+```
+.
+├── src/                          # Вихідний код
+├── tests/
+│   ├── helpers.ts                # Фабричні функції для тестових даних
+│   └── unit/
+│       ├── repositories/         # Тести всіх 5 сховищ (~65 тестів)
+│       ├── strategies/           # Тести всіх 6 стратегій (~45 тестів)
+│       ├── observers/            # Тести EventBus та observers (~25 тестів)
+│       ├── services/             # Тести всіх сервісів (~80 тестів)
+│       └── utils/                # Тести crypto утиліт (~20 тестів)
+├── docs/
+│   └── diagrams/
+│       ├── use-case.puml         # Діаграма прецедентів
+│       ├── domain-model.puml     # Модель предметної області
+│       ├── class-diagram.puml    # Діаграма класів з GoF патернами
+│       └── README.md             # Опис діаграм та бізнес-алгоритмів
+├── .cursor/
+│   └── rules/
+│       ├── architecture.md       # AI-правила: In-Memory архітектура
+│       └── testing.md            # AI-правила: стратегія тестування
+├── .github/
+│   └── workflows/
+│       └── ci.yml                # CI/CD пайплайн
+├── .cursorrules                  # Глобальні правила для AI-агентів
+├── .eslintrc.json                # ESLint конфігурація
+├── Dockerfile                    # Ізольований запуск тестів
+├── jest.config.js                # Jest з coverage reporters
+├── sonar-project.properties      # SonarCloud конфігурація
+├── tsconfig.json                 # TypeScript конфігурація
+└── package.json
+```
+
+---
+
+## Метрики якості
 
 | Метрика | Результат | Вимога |
-|---------|-----------|--------|
-| **Тести** | ✅ 224 пройшли | ≥200 |
-| **Coverage Statements** | ✅ 95.75% | ≥70% |
-| **Coverage Branches** | ✅ 86.29% | ≥70% |
-| **Coverage Functions** | ✅ 97.25% | ≥70% |
-| **Coverage Lines** | ✅ 97.76% | ≥70% |
-| **Bugs** | ✅ 0 | 0 |
-| **Vulnerabilities** | ✅ 0 | 0 |
-| **TypeScript errors** | ✅ 0 | 0 |
+|---|---|---|
+| Тести | 224 пройшли | 200+ |
+| Coverage (statements) | 95.75% | 70% |
+| Coverage (branches) | 86.29% | 70% |
+| Coverage (functions) | 97.25% | 70% |
+| Coverage (lines) | 97.76% | 70% |
+| Bugs | 0 | 0 |
+| Vulnerabilities | 0 | 0 |
+| SonarCloud Quality Gate | Passed | Passed |
 
 ---
 
-## 🚀 CI/CD Пайплайн
+## CI/CD
+
+Пайплайн запускається при кожному push та pull request.
 
 ```
-push/PR
-  │
-  ├─► lint       TypeScript typecheck + ESLint
-  │
-  ├─► test       npm run test:ci
-  │     │
-  │     └──► Artifacts (14-30 днів):
-  │           ├── coverage-html-report/   ← HTML звіт покриття
-  │           ├── coverage-xml-reports/   ← lcov.info + junit.xml + cobertura
-  │           └── coverage-full/          ← всі файли coverage/
-  │
-  ├─► sonar      SonarCloud Quality Gate
-  │     └── qualitygate.wait=true (блокує PR якщо не пройшов)
-  │
-  └─► docker     docker build (тільки на main)
+push
+  |
+  +-- Lint & TypeCheck     TypeScript компіляція + ESLint
+  |
+  +-- Tests & Coverage     224 тести, генерація coverage звітів
+  |     |
+  |     +-- Artifacts:
+  |           coverage-html-report   HTML звіт (30 днів)
+  |           coverage-xml-reports   lcov.info, cobertura, clover (30 днів)
+  |           coverage-full          повна папка coverage (14 днів)
+  |
+  +-- SonarCloud Analysis  статичний аналіз, Quality Gate
+  |
+  +-- Docker Build         валідація Dockerfile (тільки на main)
 ```
 
-**Branch Protection:** PR не можна змерджити, якщо:
-- CI не зелений
-- Coverage < 70%
-- SonarCloud Quality Gate провалено
+Branch Protection на `main`: злиття заблоковане якщо CI не зелений або Quality Gate провалено.
 
 ---
 
-## ⚙️ Налаштування
+## Запуск проекту
 
 ```bash
 # Встановити залежності
@@ -158,8 +205,11 @@ npm install
 # Запустити всі тести
 npm test
 
-# CI-режим (генерує junit.xml + coverage)
+# CI-режим з генерацією coverage звітів
 npm run test:ci
+
+# Переглянути HTML звіт покриття
+open coverage/lcov-report/index.html
 
 # TypeScript перевірка
 npm run typecheck
@@ -170,40 +220,19 @@ npm run lint
 # Збірка
 npm run build
 
-# Docker (ізольований запуск)
+# Docker
 docker build -t task-manager .
 docker run --rm task-manager
 ```
 
 ---
 
-## 🔑 SonarCloud інтеграція
+## UML діаграми
 
-1. Зареєструватись на [sonarcloud.io](https://sonarcloud.io)
-2. Підключити GitHub репозиторій
-3. Додати секрет `SONAR_TOKEN` у Settings → Secrets → Actions
-4. Замінити `YOUR_GITHUB_USERNAME` у `sonar-project.properties` та `README.md`
+Діаграми знаходяться в `docs/diagrams/` у форматі PlantUML.
 
----
+Для перегляду: [PlantUML Online Editor](https://www.plantuml.com/plantuml/uml/) або розширення `jebbs.plantuml` для VS Code.
 
-## 📁 Деталі In-Memory архітектури
-
-Всі дані зберігаються у `Map<string, T>` в пам'яті процесу:
-
-```typescript
-// BaseInMemoryStore<T> — базовий клас для всіх сховищ
-protected readonly items: Map<string, T> = new Map();
-
-protected generateId(): string {
-  return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
-}
-protected clone<U>(obj: U): U {
-  return JSON.parse(JSON.stringify(obj)); // deep copy
-}
-```
-
-**Переваги для тестування:**
-- Нульова залежність від БД
-- Повна ізоляція між тестами (новий екземпляр = чиста БД)
-- Детерміністична поведінка
-- Швидкий запуск (~20s для 224 тестів)
+- `use-case.puml` — діаграма прецедентів з акторами та сценаріями
+- `domain-model.puml` — модель предметної області з усіма сутностями та зв'язками
+- `class-diagram.puml` — діаграма класів із зображенням патернів Strategy та Observer
