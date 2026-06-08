@@ -6,9 +6,6 @@
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=lucizzs_Project_Architectura&metric=bugs)](https://sonarcloud.io/dashboard?id=lucizzs_Project_Architectura)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=lucizzs_Project_Architectura&metric=code_smells)](https://sonarcloud.io/dashboard?id=lucizzs_Project_Architectura)
 
-Курсова робота з дисципліни "Архітектура програмного забезпечення".
-Автор: Загорянський М. В., група ФеП-31, ЛНУ ім. Івана Франка.
-
 Повностековий веб-додаток для управління задачами з Kanban-дошкою, командною роботою та статистикою. Реалізовано за підходами Layered Architecture, Dependency Injection, Repository Pattern, SOLID. Повністю In-Memory — без зовнішніх баз даних.
 
 ---
