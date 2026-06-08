@@ -1,9 +1,5 @@
-/**
- * Redis замінено на In-Memory кеш (Map).
- * Інтерфейс сумісний з ioredis для збереження StatsService без змін.
- */
 export class InMemoryRedis {
-  private store = new Map<string, { value: string; expiresAt?: number }>();
+  private readonly store = new Map<string, { value: string; expiresAt?: number }>();
 
   async get(key: string): Promise<string | null> {
     const entry = this.store.get(key);
@@ -23,11 +19,9 @@ export class InMemoryRedis {
     return this.store.delete(key) ? 1 : 0;
   }
 
-  clear(): void {
-    this.store.clear();
-  }
+  clear(): void { this.store.clear(); }
 }
 
 export const redis = new InMemoryRedis();
-export async function connectRedis(): Promise<void> {}
-export async function disconnectRedis(): Promise<void> {}
+export function connectRedis(): Promise<void> { return Promise.resolve(); }
+export function disconnectRedis(): Promise<void> { return Promise.resolve(); }
