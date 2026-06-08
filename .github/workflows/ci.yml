@@ -71,7 +71,7 @@ jobs:
           path: |
             coverage/lcov.info
             coverage/cobertura-coverage.xml
-            coverage/junit.xml
+            reports/junit.xml
             coverage/clover.xml
           retention-days: 30
 
