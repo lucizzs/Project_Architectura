@@ -27,7 +27,7 @@ module.exports = {
   reporters: [
     'default',
     ['jest-junit', {
-      outputDirectory: 'coverage',
+      outputDirectory: 'reports',
       outputName: 'junit.xml',
       classNameTemplate: '{classname}',
       titleTemplate: '{title}',
