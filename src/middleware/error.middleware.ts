@@ -2,12 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { AppError } from '../domain/errors';
 import { logger } from '../utils/logger';
 
-export function errorHandler(
-  err: Error,
-  _req: Request,
-  res: Response,
-  _next: NextFunction,
-): void {
+export function errorHandler(err: Error, _req: Request, res: Response, _next: NextFunction): void {
   if (err instanceof AppError) {
     res.status(err.statusCode).json({
       error: { code: err.code, message: err.message, details: err.details },

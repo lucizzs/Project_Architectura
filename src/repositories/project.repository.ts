@@ -24,8 +24,12 @@ export interface ProjectMember {
 
 let _pSeq = 1;
 let _mSeq = 1;
-function genPId(): string { return `p_${Date.now()}_${_pSeq++}`; }
-function genMId(): string { return `m_${Date.now()}_${_mSeq++}`; }
+function genPId(): string {
+  return `p_${Date.now()}_${_pSeq++}`;
+}
+function genMId(): string {
+  return `m_${Date.now()}_${_mSeq++}`;
+}
 
 export class ProjectRepository {
   private readonly projects = new Map<string, Project>();
@@ -148,7 +152,9 @@ export class ProjectRepository {
     this._userInfoStore.set(userId, { name, email });
   }
 
-  updateTaskCount(_projectId: string, _delta: number): void { /* stats computed live */ }
+  updateTaskCount(_projectId: string, _delta: number): void {
+    /* stats computed live */
+  }
 
   _clear(): void {
     this.projects.clear();

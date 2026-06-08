@@ -4,9 +4,14 @@
  */
 
 export type EventType =
-  | 'task.created' | 'task.updated' | 'task.deleted' | 'task.status_changed'
-  | 'project.created' | 'project.deleted'
-  | 'member.added' | 'member.removed'
+  | 'task.created'
+  | 'task.updated'
+  | 'task.deleted'
+  | 'task.status_changed'
+  | 'project.created'
+  | 'project.deleted'
+  | 'member.added'
+  | 'member.removed'
   | 'comment.added';
 
 export interface EventPayload {
@@ -32,7 +37,9 @@ export class EventBus {
   }
 
   /** Скидає Singleton — для використання в тестах */
-  static reset(): void { EventBus._instance = null; }
+  static reset(): void {
+    EventBus._instance = null;
+  }
 
   subscribe(type: EventType, observer: IObserver): void {
     const list = this.subscribers.get(type) ?? [];
@@ -42,7 +49,10 @@ export class EventBus {
 
   unsubscribe(type: EventType, observer: IObserver): void {
     const list = this.subscribers.get(type) ?? [];
-    this.subscribers.set(type, list.filter((o) => o !== observer));
+    this.subscribers.set(
+      type,
+      list.filter((o) => o !== observer),
+    );
   }
 
   notify(type: EventType, meta: Record<string, unknown> = {}): void {
@@ -53,8 +63,12 @@ export class EventBus {
     }
   }
 
-  getLog(): EventPayload[] { return [...this._log]; }
-  clearLog(): void { this._log.length = 0; }
+  getLog(): EventPayload[] {
+    return [...this._log];
+  }
+  clearLog(): void {
+    this._log.length = 0;
+  }
 }
 
 // ── Concrete Observers ──────────────────────────────────────────────────────
@@ -66,8 +80,12 @@ export class NotificationObserver implements IObserver {
     this.notifications.push(event);
   }
 
-  getAll(): EventPayload[] { return [...this.notifications]; }
-  clear(): void { this.notifications.length = 0; }
+  getAll(): EventPayload[] {
+    return [...this.notifications];
+  }
+  clear(): void {
+    this.notifications.length = 0;
+  }
 }
 
 export class AuditLogObserver implements IObserver {
@@ -77,5 +95,7 @@ export class AuditLogObserver implements IObserver {
     this.entries.push({ type: event.type, meta: event.meta, at: event.timestamp });
   }
 
-  getEntries() { return [...this.entries]; }
+  getEntries() {
+    return [...this.entries];
+  }
 }

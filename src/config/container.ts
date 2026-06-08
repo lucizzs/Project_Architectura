@@ -38,9 +38,8 @@ export function buildContainer(redis?: InMemoryRedis): AppContainer {
   const commentRepo = new CommentRepository();
 
   // Wire user resolver so tasks can embed assignee/createdBy
-  taskRepo._userResolver = (id: string) => userRepo.findById(id).then((u) =>
-    u ? { id: u.id, name: u.name, email: u.email } : null,
-  );
+  taskRepo._userResolver = (id: string) =>
+    userRepo.findById(id).then((u) => (u ? { id: u.id, name: u.name, email: u.email } : null));
 
   const authService = new AuthService(userRepo);
   const projectService = new ProjectService(projectRepo, userRepo);

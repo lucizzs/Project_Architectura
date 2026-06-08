@@ -15,7 +15,9 @@ import { InMemoryRedis } from '../../src/config/redis';
 // ── InMemoryRedis ──────────────────────────────────────────────────────────
 describe('InMemoryRedis', () => {
   let redis: InMemoryRedis;
-  beforeEach(() => { redis = new InMemoryRedis(); });
+  beforeEach(() => {
+    redis = new InMemoryRedis();
+  });
 
   it('get — null якщо ключ відсутній', async () => {
     expect(await redis.get('missing')).toBeNull();
@@ -89,7 +91,6 @@ describe('password utils', () => {
 
 // ── JWT utils ──────────────────────────────────────────────────────────────
 describe('JWT utils', () => {
-
   it('signToken — повертає рядок', () => {
     const token = signToken({ sub: 'u1', email: 'a@b.com' });
     expect(typeof token).toBe('string');
@@ -187,16 +188,18 @@ describe('CommentService', () => {
 
   it('create — 404 якщо задача не існує', async () => {
     const { commentService } = makeCommentSetup();
-    await expect(commentService.create('u1', 'no-task', { content: 'Hi' }))
-      .rejects.toThrow(NotFoundError);
+    await expect(commentService.create('u1', 'no-task', { content: 'Hi' })).rejects.toThrow(
+      NotFoundError,
+    );
   });
 
   it('create — 403 якщо не член проєкту', async () => {
     const { commentService, taskRepo, projectService } = makeCommentSetup();
     const p = await projectService.create('u1', { name: 'P' });
     const t = await taskRepo.create(p.id, 'u1', { title: 'T' });
-    await expect(commentService.create('u2', t.id, { content: 'Hi' }))
-      .rejects.toThrow(ForbiddenError);
+    await expect(commentService.create('u2', t.id, { content: 'Hi' })).rejects.toThrow(
+      ForbiddenError,
+    );
   });
 
   it('listByTask — повертає коментарі', async () => {

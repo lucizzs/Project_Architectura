@@ -22,8 +22,12 @@ const future = (days: number): Date => {
 };
 
 const task = (overrides: Partial<Task> = {}): Task => ({
-  id: 't1', title: 'Demo', priority: 'MEDIUM',
-  dueDate: null, status: 'TODO', ...overrides,
+  id: 't1',
+  title: 'Demo',
+  priority: 'MEDIUM',
+  dueDate: null,
+  status: 'TODO',
+  ...overrides,
 });
 
 // ── PriorityFieldStrategy ──────────────────────────────────────────────────
@@ -42,7 +46,8 @@ describe('DeadlineStrategy', () => {
   const s = new DeadlineStrategy();
 
   it('без дедлайну → 0', () => expect(s.score(task())).toBe(0));
-  it('DONE без штрафу → 0', () => expect(s.score(task({ dueDate: past(5), status: 'DONE' }))).toBe(0));
+  it('DONE без штрафу → 0', () =>
+    expect(s.score(task({ dueDate: past(5), status: 'DONE' }))).toBe(0));
   it('прострочено → 100', () => expect(s.score(task({ dueDate: past(2) }))).toBe(100));
   it('<1 дня → 80', () => expect(s.score(task({ dueDate: future(0) }))).toBe(80));
   it('<3 дні → 60', () => expect(s.score(task({ dueDate: future(2) }))).toBe(60));

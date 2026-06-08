@@ -12,7 +12,9 @@ export interface Comment {
 }
 
 let _cSeq = 1;
-function genId(): string { return `c_${Date.now()}_${_cSeq++}`; }
+function genId(): string {
+  return `c_${Date.now()}_${_cSeq++}`;
+}
 
 export class CommentRepository {
   private readonly store = new Map<string, Comment>();
@@ -46,5 +48,7 @@ export class CommentRepository {
     this.store.delete(id);
   }
 
-  _clear(): void { this.store.clear(); }
+  _clear(): void {
+    this.store.clear();
+  }
 }

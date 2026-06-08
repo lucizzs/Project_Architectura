@@ -23,7 +23,9 @@ export class InMemoryRedis {
     return this.store.delete(key) ? 1 : 0;
   }
 
-  clear(): void { this.store.clear(); }
+  clear(): void {
+    this.store.clear();
+  }
 }
 
 export const redis = new InMemoryRedis();

@@ -7,7 +7,9 @@ import { CommentRepository } from '../../../src/repositories/comment.repository'
 describe('UserRepository', () => {
   let repo: UserRepository;
 
-  beforeEach(() => { repo = new UserRepository(); });
+  beforeEach(() => {
+    repo = new UserRepository();
+  });
 
   it('create — зберігає і повертає користувача', async () => {
     const u = await repo.create({ email: 'a@b.com', name: 'Alice', passwordHash: 'hash' });
@@ -89,7 +91,9 @@ describe('UserRepository', () => {
 describe('ProjectRepository', () => {
   let repo: ProjectRepository;
 
-  beforeEach(() => { repo = new ProjectRepository(); });
+  beforeEach(() => {
+    repo = new ProjectRepository();
+  });
 
   it('create — зберігає проєкт та додає власника як OWNER', async () => {
     const p = await repo.create({ name: 'Proj', ownerId: 'u1' });
@@ -174,10 +178,11 @@ describe('ProjectRepository', () => {
 describe('TaskRepository', () => {
   let repo: TaskRepository;
 
-  beforeEach(() => { repo = new TaskRepository(); });
+  beforeEach(() => {
+    repo = new TaskRepository();
+  });
 
-  const makeTask = (overrides = {}) =>
-    repo.create('p1', 'u1', { title: 'Task', ...overrides });
+  const makeTask = (overrides = {}) => repo.create('p1', 'u1', { title: 'Task', ...overrides });
 
   it('create — зберігає задачу', async () => {
     const t = await makeTask();
@@ -274,7 +279,9 @@ describe('TaskRepository', () => {
 describe('CommentRepository', () => {
   let repo: CommentRepository;
 
-  beforeEach(() => { repo = new CommentRepository(); });
+  beforeEach(() => {
+    repo = new CommentRepository();
+  });
 
   it('create — зберігає коментар', async () => {
     const c = await repo.create('t1', 'u1', 'Привіт');

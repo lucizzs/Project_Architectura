@@ -7,7 +7,11 @@ import { CreateTaskDto, UpdateTaskDto, TaskFilterDto } from '../dto/task.dto';
 export type TaskStatus = 'TODO' | 'IN_PROGRESS' | 'IN_REVIEW' | 'DONE' | 'CANCELLED';
 export type TaskPriority = 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
 
-export interface UserShort { id: string; name: string; email: string; }
+export interface UserShort {
+  id: string;
+  name: string;
+  email: string;
+}
 
 export interface Task {
   id: string;
@@ -26,7 +30,9 @@ export interface Task {
 }
 
 let _tSeq = 1;
-function genId(): string { return `t_${Date.now()}_${_tSeq++}`; }
+function genId(): string {
+  return `t_${Date.now()}_${_tSeq++}`;
+}
 
 export class TaskRepository {
   private readonly store = new Map<string, Task>();
@@ -34,12 +40,9 @@ export class TaskRepository {
   _userResolver?: (id: string) => Promise<UserShort | null>;
 
   async create(projectId: string, createdById: string, data: CreateTaskDto): Promise<Task> {
-    const assignee = data.assigneeId && this._userResolver
-      ? await this._userResolver(data.assigneeId)
-      : null;
-    const createdBy = this._userResolver
-      ? await this._userResolver(createdById)
-      : null;
+    const assignee =
+      data.assigneeId && this._userResolver ? await this._userResolver(data.assigneeId) : null;
+    const createdBy = this._userResolver ? await this._userResolver(createdById) : null;
 
     const task: Task = {
       id: genId(),
@@ -77,9 +80,7 @@ export class TaskRepository {
     if (filter.search) {
       const q = filter.search.toLowerCase();
       items = items.filter(
-        (t) =>
-          t.title.toLowerCase().includes(q) ||
-          (t.description ?? '').toLowerCase().includes(q),
+        (t) => t.title.toLowerCase().includes(q) || (t.description ?? '').toLowerCase().includes(q),
       );
     }
 
@@ -125,5 +126,7 @@ export class TaskRepository {
     return result;
   }
 
-  _clear(): void { this.store.clear(); }
+  _clear(): void {
+    this.store.clear();
+  }
 }

@@ -4,7 +4,6 @@ import { ProjectRepository } from '../../src/repositories/project.repository';
 import { UserRepository } from '../../src/repositories/user.repository';
 import { ForbiddenError, NotFoundError, ConflictError } from '../../src/domain/errors';
 
-
 function makeProjectRepoMock(): jest.Mocked<ProjectRepository> {
   return {
     create: jest.fn(),

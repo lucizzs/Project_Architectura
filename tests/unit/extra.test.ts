@@ -7,7 +7,12 @@ import { ProjectService } from '../../src/services/project.service';
 import { UserRepository } from '../../src/repositories/user.repository';
 import { ProjectRepository } from '../../src/repositories/project.repository';
 import { TaskRepository } from '../../src/repositories/task.repository';
-import { ConflictError, UnauthorizedError, NotFoundError, ForbiddenError } from '../../src/domain/errors';
+import {
+  ConflictError,
+  UnauthorizedError,
+  NotFoundError,
+  ForbiddenError,
+} from '../../src/domain/errors';
 
 // ── AuthService (full flow with real repos) ────────────────────────────────
 describe('AuthService — real repo integration', () => {
@@ -41,17 +46,23 @@ describe('AuthService — real repo integration', () => {
 
   it('login — UnauthorizedError при неправильному паролі', async () => {
     await service.register({ email: 'u@test.com', password: 'correct123', name: 'U' });
-    await expect(service.login({ email: 'u@test.com', password: 'wrong' }))
-      .rejects.toThrow(UnauthorizedError);
+    await expect(service.login({ email: 'u@test.com', password: 'wrong' })).rejects.toThrow(
+      UnauthorizedError,
+    );
   });
 
   it('login — UnauthorizedError якщо email не існує', async () => {
-    await expect(service.login({ email: 'no@test.com', password: 'any' }))
-      .rejects.toThrow(UnauthorizedError);
+    await expect(service.login({ email: 'no@test.com', password: 'any' })).rejects.toThrow(
+      UnauthorizedError,
+    );
   });
 
   it('getCurrentUser — повертає профіль', async () => {
-    const { user } = await service.register({ email: 'p@test.com', password: 'pass123', name: 'P' });
+    const { user } = await service.register({
+      email: 'p@test.com',
+      password: 'pass123',
+      name: 'P',
+    });
     const profile = await service.getCurrentUser(user.id);
     expect(profile.name).toBe('P');
   });
@@ -98,8 +109,7 @@ describe('TaskService — real repo integration', () => {
   it('create — 403 якщо не член', async () => {
     const { taskService, projectService } = makeTaskSetup();
     const p = await projectService.create('u1', { name: 'P' });
-    await expect(taskService.create('u2', p.id, { title: 'T' }))
-      .rejects.toThrow(ForbiddenError);
+    await expect(taskService.create('u2', p.id, { title: 'T' })).rejects.toThrow(ForbiddenError);
   });
 
   it('getById — повертає задачу', async () => {
@@ -174,7 +184,11 @@ describe('TaskService — real repo integration', () => {
     const p = await projectService.create('u1', { name: 'P' });
     await taskService.create('u1', p.id, { title: 'T1', status: 'TODO' });
     await taskService.create('u1', p.id, { title: 'T2', status: 'DONE' });
-    const res = await taskService.listByProject('u1', p.id, { page: 1, pageSize: 10, status: 'TODO' });
+    const res = await taskService.listByProject('u1', p.id, {
+      page: 1,
+      pageSize: 10,
+      status: 'TODO',
+    });
     expect(res.items).toHaveLength(1);
     expect(res.items[0].status).toBe('TODO');
   });
@@ -184,7 +198,11 @@ describe('TaskService — real repo integration', () => {
     const p = await projectService.create('u1', { name: 'P' });
     await taskService.create('u1', p.id, { title: 'Fix login bug' });
     await taskService.create('u1', p.id, { title: 'Write tests' });
-    const res = await taskService.listByProject('u1', p.id, { page: 1, pageSize: 10, search: 'login' });
+    const res = await taskService.listByProject('u1', p.id, {
+      page: 1,
+      pageSize: 10,
+      search: 'login',
+    });
     expect(res.items).toHaveLength(1);
   });
 });

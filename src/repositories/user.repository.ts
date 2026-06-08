@@ -67,5 +67,7 @@ export class UserRepository {
   }
 
   /** Для тестів — очищає сховище */
-  _clear(): void { this.store.clear(); }
+  _clear(): void {
+    this.store.clear();
+  }
 }

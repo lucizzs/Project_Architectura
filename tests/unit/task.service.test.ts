@@ -3,7 +3,6 @@ import { TaskRepository } from '../../src/repositories/task.repository';
 import { ProjectService } from '../../src/services/project.service';
 import { NotFoundError, ForbiddenError } from '../../src/domain/errors';
 
-
 function makeTaskRepoMock(): jest.Mocked<TaskRepository> {
   return {
     create: jest.fn(),
