@@ -1,0 +1,104 @@
+# docker-compose.yaml
+# Запуск: docker-compose up -d
+# Сервіси:
+#   - db       PostgreSQL 16 (БД додатку)
+#   - redis    Redis 7       (кеш статистики)
+#   - app      Сам Node.js додаток (Express + Prisma)
+#   - adminer  Веб-UI для перегляду БД (опціонально, профіль "dev-tools")
+#   - test     Контейнер для запуску lint + юніт-тестів (профіль "test")
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: taskmgr-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-taskmgr}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme_in_prod}
+      POSTGRES_DB: ${POSTGRES_DB:-taskmgr}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-taskmgr} -d ${POSTGRES_DB:-taskmgr}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: taskmgr-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: taskmgr-app:latest
+    container_name: taskmgr-app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: postgresql://${POSTGRES_USER:-taskmgr}:${POSTGRES_PASSWORD:-changeme_in_prod}@db:5432/${POSTGRES_DB:-taskmgr}?schema=public
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: ${JWT_SECRET:-please_change_me_to_a_long_random_string_at_least_32_chars}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
+      BCRYPT_ROUNDS: ${BCRYPT_ROUNDS:-10}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    ports:
+      - "${PORT:-3000}:3000"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "--quiet", "http://localhost:3000/healthz"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  adminer:
+    image: adminer:4
+    container_name: taskmgr-adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    profiles: ["dev-tools"]
+
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    image: taskmgr-test:latest
+    container_name: taskmgr-test
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      NODE_ENV: test
+      DATABASE_URL: postgresql://${POSTGRES_USER:-taskmgr}:${POSTGRES_PASSWORD:-changeme_in_prod}@db:5432/${POSTGRES_DB:-taskmgr}?schema=public
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: test_secret_at_least_16_chars_long
+      LOG_LEVEL: fatal
+    profiles: ["test"]
+
+volumes:
+  postgres_data:
+  redis_data:

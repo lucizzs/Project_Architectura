@@ -1,0 +1,155 @@
+// schema.prisma — модель домену "Менеджер задач"
+// Реляційна БД PostgreSQL, ORM Prisma з міграціями.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// =============== ENUMS ===============
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  IN_REVIEW
+  DONE
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum ProjectRole {
+  OWNER
+  MEMBER
+}
+
+// =============== USER ===============
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  ownedProjects    Project[]        @relation("ProjectOwner")
+  projectMembers   ProjectMember[]
+  assignedTasks    Task[]           @relation("TaskAssignee")
+  createdTasks     Task[]           @relation("TaskCreator")
+  comments         Comment[]
+
+  @@map("users")
+}
+
+// =============== PROJECT ===============
+
+model Project {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  ownerId     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  owner   User            @relation("ProjectOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  members ProjectMember[]
+  tasks   Task[]
+  tags    Tag[]
+
+  @@index([ownerId])
+  @@map("projects")
+}
+
+model ProjectMember {
+  id        String      @id @default(uuid())
+  projectId String
+  userId    String
+  role      ProjectRole @default(MEMBER)
+  joinedAt  DateTime    @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, userId])
+  @@index([userId])
+  @@map("project_members")
+}
+
+// =============== TASK ===============
+
+model Task {
+  id          String       @id @default(uuid())
+  title       String
+  description String?
+  status      TaskStatus   @default(TODO)
+  priority    TaskPriority @default(MEDIUM)
+  dueDate     DateTime?
+  projectId   String
+  assigneeId  String?
+  createdById String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  assignee  User?     @relation("TaskAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+  createdBy User      @relation("TaskCreator", fields: [createdById], references: [id], onDelete: Cascade)
+  comments  Comment[]
+  tags      TagOnTask[]
+
+  @@index([projectId])
+  @@index([assigneeId])
+  @@index([status])
+  @@map("tasks")
+}
+
+// =============== COMMENT ===============
+
+model Comment {
+  id        String   @id @default(uuid())
+  content   String
+  taskId    String
+  authorId  String
+  createdAt DateTime @default(now())
+
+  task   Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([taskId])
+  @@map("comments")
+}
+
+// =============== TAG ===============
+
+model Tag {
+  id        String   @id @default(uuid())
+  name      String
+  color     String   @default("#3b82f6")
+  projectId String
+  createdAt DateTime @default(now())
+
+  project Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tasks   TagOnTask[]
+
+  @@unique([projectId, name])
+  @@map("tags")
+}
+
+model TagOnTask {
+  taskId String
+  tagId  String
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([taskId, tagId])
+  @@map("task_tags")
+}

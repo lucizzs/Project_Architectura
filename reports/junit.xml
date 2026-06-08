@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="200" failures="0" errors="0" time="3.812">
+  <testsuite name="UserRepository" errors="0" failures="0" skipped="0" timestamp="2026-06-08T10:33:11" time="1.307" tests="46">
+    <testcase classname="UserRepository" name="create — зберігає і повертає користувача" time="0.002">
+    </testcase>
+    <testcase classname="UserRepository" name="create — генерує унікальні ID" time="0">
+    </testcase>
+    <testcase classname="UserRepository" name="findById — повертає користувача за ID" time="0">
+    </testcase>
+    <testcase classname="UserRepository" name="findById — null якщо не знайдено" time="0.001">
+    </testcase>
+    <testcase classname="UserRepository" name="findByEmail — регістронезалежно" time="0">
+    </testcase>
+    <testcase classname="UserRepository" name="findByEmail — null якщо немає" time="0">
+    </testcase>
+    <testcase classname="UserRepository" name="existsByEmail — true/false" time="0">
+    </testcase>
+    <testcase classname="UserRepository" name="findByName — точний збіг регістронезалежно" time="0">
+    </testcase>
+    <testcase classname="UserRepository" name="findByName — null якщо немає" time="0">
+    </testcase>
+    <testcase classname="UserRepository" name="searchByName — часткове співпадіння" time="0">
+    </testcase>
+    <testcase classname="UserRepository" name="searchByName — порожній запит → []" time="0">
+    </testcase>
+    <testcase classname="UserRepository" name="searchByName — max 10 результатів" time="0">
+    </testcase>
+    <testcase classname="UserRepository" name="повертає копію — мутація не впливає на сховище" time="0.001">
+    </testcase>
+    <testcase classname="ProjectRepository" name="create — зберігає проєкт та додає власника як OWNER" time="0">
+    </testcase>
+    <testcase classname="ProjectRepository" name="create — зберігає description" time="0">
+    </testcase>
+    <testcase classname="ProjectRepository" name="create — description null якщо не передано" time="0">
+    </testcase>
+    <testcase classname="ProjectRepository" name="findById — повертає проєкт" time="0">
+    </testcase>
+    <testcase classname="ProjectRepository" name="findById — null якщо немає" time="0">
+    </testcase>
+    <testcase classname="ProjectRepository" name="findByIdWithCounts — включає _count.members" time="0">
+    </testcase>
+    <testcase classname="ProjectRepository" name="findAllForUser — повертає лише проєкти де є членом" time="0.001">
+    </testcase>
+    <testcase classname="ProjectRepository" name="update — змінює name і description" time="0">
+    </testcase>
+    <testcase classname="ProjectRepository" name="delete — видаляє проєкт і всіх членів" time="0">
+    </testcase>
+    <testcase classname="ProjectRepository" name="addMember — додає MEMBER" time="0">
+    </testcase>
+    <testcase classname="ProjectRepository" name="removeMember — видаляє члена" time="0">
+    </testcase>
+    <testcase classname="ProjectRepository" name="findMembers — повертає список з ролями" time="0.001">
+    </testcase>
+    <testcase classname="TaskRepository" name="create — зберігає задачу" time="0">
+    </testcase>
+    <testcase classname="TaskRepository" name="create — встановлює кастомні status/priority" time="0">
+    </testcase>
+    <testcase classname="TaskRepository" name="findById — повертає задачу" time="0">
+    </testcase>
+    <testcase classname="TaskRepository" name="findById — null якщо немає" time="0.001">
+    </testcase>
+    <testcase classname="TaskRepository" name="findManyByProject — фільтрує за projectId" time="0">
+    </testcase>
+    <testcase classname="TaskRepository" name="findManyByProject — фільтрує за status" time="0">
+    </testcase>
+    <testcase classname="TaskRepository" name="findManyByProject — фільтрує за priority" time="0">
+    </testcase>
+    <testcase classname="TaskRepository" name="findManyByProject — пошук за title" time="0">
+    </testcase>
+    <testcase classname="TaskRepository" name="findManyByProject — пагінація" time="0">
+    </testcase>
+    <testcase classname="TaskRepository" name="update — змінює title" time="0">
+    </testcase>
+    <testcase classname="TaskRepository" name="update — змінює status" time="0">
+    </testcase>
+    <testcase classname="TaskRepository" name="delete — видаляє задачу" time="0">
+    </testcase>
+    <testcase classname="TaskRepository" name="countByStatus — рахує за статусами" time="0">
+    </testcase>
+    <testcase classname="TaskRepository" name="countByStatus — повертає {} для порожнього проєкту" time="0">
+    </testcase>
+    <testcase classname="CommentRepository" name="create — зберігає коментар" time="0">
+    </testcase>
+    <testcase classname="CommentRepository" name="findByTask — повертає коментарі задачі" time="0">
+    </testcase>
+    <testcase classname="CommentRepository" name="findByTask — сортує за датою (asc)" time="0.002">
+    </testcase>
+    <testcase classname="CommentRepository" name="findById — знаходить коментар" time="0">
+    </testcase>
+    <testcase classname="CommentRepository" name="findById — null якщо немає" time="0">
+    </testcase>
+    <testcase classname="CommentRepository" name="delete — видаляє коментар" time="0">
+    </testcase>
+    <testcase classname="CommentRepository" name="порожній findByTask → []" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="AuthService — real repo integration" errors="0" failures="0" skipped="0" timestamp="2026-06-08T10:33:13" time="0.874" tests="27">
+    <testcase classname="AuthService — real repo integration" name="register + login — повний цикл" time="0.179">
+    </testcase>
+    <testcase classname="AuthService — real repo integration" name="register — нормалізує email до нижнього регістру" time="0.126">
+    </testcase>
+    <testcase classname="AuthService — real repo integration" name="register — ConflictError при дублікаті email" time="0.068">
+    </testcase>
+    <testcase classname="AuthService — real repo integration" name="login — UnauthorizedError при неправильному паролі" time="0.125">
+    </testcase>
+    <testcase classname="AuthService — real repo integration" name="login — UnauthorizedError якщо email не існує" time="0">
+    </testcase>
+    <testcase classname="AuthService — real repo integration" name="getCurrentUser — повертає профіль" time="0.063">
+    </testcase>
+    <testcase classname="AuthService — real repo integration" name="getCurrentUser — NotFoundError для невідомого ID" time="0">
+    </testcase>
+    <testcase classname="AuthService — real repo integration" name="searchByName — знаходить часткові збіги" time="0.063">
+    </testcase>
+    <testcase classname="AuthService — real repo integration" name="searchByName — порожній рядок → []" time="0">
+    </testcase>
+    <testcase classname="AuthService — real repo integration" name="searchByName — пробіл → []" time="0">
+    </testcase>
+    <testcase classname="TaskService — real repo integration" name="create — додає задачу в проєкт" time="0.001">
+    </testcase>
+    <testcase classname="TaskService — real repo integration" name="create — 403 якщо не член" time="0.001">
+    </testcase>
+    <testcase classname="TaskService — real repo integration" name="getById — повертає задачу" time="0">
+    </testcase>
+    <testcase classname="TaskService — real repo integration" name="getById — 404 якщо не існує" time="0">
+    </testcase>
+    <testcase classname="TaskService — real repo integration" name="listByProject — повертає пагінацію" time="0">
+    </testcase>
+    <testcase classname="TaskService — real repo integration" name="listByProject — пагінація — page 2" time="0">
+    </testcase>
+    <testcase classname="TaskService — real repo integration" name="update — змінює title і status" time="0">
+    </testcase>
+    <testcase classname="TaskService — real repo integration" name="update — 404 якщо задача не існує" time="0.001">
+    </testcase>
+    <testcase classname="TaskService — real repo integration" name="delete — creator може видалити" time="0">
+    </testcase>
+    <testcase classname="TaskService — real repo integration" name="delete — 403 стороннім" time="0">
+    </testcase>
+    <testcase classname="TaskService — real repo integration" name="delete — 404 якщо не існує" time="0">
+    </testcase>
+    <testcase classname="TaskService — real repo integration" name="listByProject — фільтрація за status" time="0">
+    </testcase>
+    <testcase classname="TaskService — real repo integration" name="listByProject — пошук за назвою" time="0.001">
+    </testcase>
+    <testcase classname="TaskService — edge cases" name="listByProject — порожній проєкт → items=[]" time="0">
+    </testcase>
+    <testcase classname="TaskService — edge cases" name="create — зберігає dueDate" time="0">
+    </testcase>
+    <testcase classname="TaskService — edge cases" name="update — null dueDate очищає дату" time="0">
+    </testcase>
+    <testcase classname="TaskService — edge cases" name="totalPages розраховується правильно" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="InMemoryRedis" errors="0" failures="0" skipped="0" timestamp="2026-06-08T10:33:14" time="0.603" tests="28">
+    <testcase classname="InMemoryRedis" name="get — null якщо ключ відсутній" time="0">
+    </testcase>
+    <testcase classname="InMemoryRedis" name="setex + get — повертає значення" time="0">
+    </testcase>
+    <testcase classname="InMemoryRedis" name="setex — прострочений ключ повертає null" time="0">
+    </testcase>
+    <testcase classname="InMemoryRedis" name="del — видаляє ключ" time="0.001">
+    </testcase>
+    <testcase classname="InMemoryRedis" name="del — повертає 1 якщо ключ існував" time="0">
+    </testcase>
+    <testcase classname="InMemoryRedis" name="del — повертає 0 якщо ключ відсутній" time="0">
+    </testcase>
+    <testcase classname="InMemoryRedis" name="clear — видаляє всі ключі" time="0">
+    </testcase>
+    <testcase classname="InMemoryRedis" name="JSON round-trip" time="0">
+    </testcase>
+    <testcase classname="password utils" name="hashPassword — повертає рядок" time="0.075">
+    </testcase>
+    <testcase classname="password utils" name="verifyPassword — true для правильного пароля" time="0.126">
+    </testcase>
+    <testcase classname="password utils" name="verifyPassword — false для неправильного пароля" time="0.125">
+    </testcase>
+    <testcase classname="password utils" name="два однакові паролі — різні хеші (сіль)" time="0.124">
+    </testcase>
+    <testcase classname="JWT utils" name="signToken — повертає рядок" time="0.001">
+    </testcase>
+    <testcase classname="JWT utils" name="verifyToken — повертає payload з sub і email" time="0">
+    </testcase>
+    <testcase classname="JWT utils" name="verifyToken — кидає на невалідному токені" time="0.005">
+    </testcase>
+    <testcase classname="JWT utils" name="verifyToken — кидає на підробленому токені" time="0.001">
+    </testcase>
+    <testcase classname="ProjectService — listForUser" name="повертає всі проєкти користувача" time="0">
+    </testcase>
+    <testcase classname="ProjectService — listForUser" name="не повертає чужі проєкти" time="0">
+    </testcase>
+    <testcase classname="ProjectService — listForUser" name="порожній список якщо нема проєктів" time="0">
+    </testcase>
+    <testcase classname="ProjectService — delete" name="видаляє проєкт" time="0.002">
+    </testcase>
+    <testcase classname="ProjectService — delete" name="кидає 403 якщо не власник" time="0">
+    </testcase>
+    <testcase classname="CommentService" name="create — додає коментар якщо є доступ" time="0.001">
+    </testcase>
+    <testcase classname="CommentService" name="create — 404 якщо задача не існує" time="0">
+    </testcase>
+    <testcase classname="CommentService" name="create — 403 якщо не член проєкту" time="0.001">
+    </testcase>
+    <testcase classname="CommentService" name="listByTask — повертає коментарі" time="0">
+    </testcase>
+    <testcase classname="CommentService" name="delete — автор може видалити свій коментар" time="0">
+    </testcase>
+    <testcase classname="CommentService" name="delete — чужий коментар без прав → 403" time="0">
+    </testcase>
+    <testcase classname="CommentService" name="delete — 404 якщо коментар не існує" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="PriorityFieldStrategy" errors="0" failures="0" skipped="0" timestamp="2026-06-08T10:33:14" time="0.087" tests="42">
+    <testcase classname="PriorityFieldStrategy" name="URGENT має найвищий бал" time="0">
+    </testcase>
+    <testcase classname="PriorityFieldStrategy" name="HIGH" time="0">
+    </testcase>
+    <testcase classname="PriorityFieldStrategy" name="MEDIUM" time="0">
+    </testcase>
+    <testcase classname="PriorityFieldStrategy" name="LOW має найнижчий бал" time="0.001">
+    </testcase>
+    <testcase classname="PriorityFieldStrategy" name="невідомий пріоритет → 10" time="0">
+    </testcase>
+    <testcase classname="DeadlineStrategy" name="без дедлайну → 0" time="0">
+    </testcase>
+    <testcase classname="DeadlineStrategy" name="DONE без штрафу → 0" time="0.001">
+    </testcase>
+    <testcase classname="DeadlineStrategy" name="прострочено → 100" time="0">
+    </testcase>
+    <testcase classname="DeadlineStrategy" name="&lt;1 дня → 80" time="0">
+    </testcase>
+    <testcase classname="DeadlineStrategy" name="&lt;3 дні → 60" time="0">
+    </testcase>
+    <testcase classname="DeadlineStrategy" name="&lt;7 днів → 40" time="0">
+    </testcase>
+    <testcase classname="DeadlineStrategy" name="&gt;=7 днів → 10" time="0">
+    </testcase>
+    <testcase classname="HybridPriorityStrategy" name="комбінує field і deadline" time="0">
+    </testcase>
+    <testcase classname="HybridPriorityStrategy" name="прострочений URGENT має найвищий бал" time="0.001">
+    </testcase>
+    <testcase classname="HybridPriorityStrategy" name="без дедлайну — лише поле пріоритету" time="0">
+    </testcase>
+    <testcase classname="TaskPriorityContext" name="ранжує задачі за замовчуванням (Hybrid)" time="0">
+    </testcase>
+    <testcase classname="TaskPriorityContext" name="дозволяє замінити стратегію" time="0">
+    </testcase>
+    <testcase classname="TaskPriorityContext" name="не мутує вхідний масив" time="0">
+    </testcase>
+    <testcase classname="TaskPriorityContext" name="порожній масив → порожній результат" time="0">
+    </testcase>
+    <testcase classname="LinearPenaltyStrategy" name="0 днів → 0" time="0">
+    </testcase>
+    <testcase classname="LinearPenaltyStrategy" name="негативні дні → 0" time="0">
+    </testcase>
+    <testcase classname="LinearPenaltyStrategy" name="5 днів → 5" time="0">
+    </testcase>
+    <testcase classname="LinearPenaltyStrategy" name="30 днів → 30" time="0">
+    </testcase>
+    <testcase classname="LinearPenaltyStrategy" name="лінійна залежність" time="0">
+    </testcase>
+    <testcase classname="ExponentialPenaltyStrategy" name="0 → 0" time="0">
+    </testcase>
+    <testcase classname="ExponentialPenaltyStrategy" name="негативні → 0" time="0">
+    </testcase>
+    <testcase classname="ExponentialPenaltyStrategy" name="1 день → 2" time="0">
+    </testcase>
+    <testcase classname="ExponentialPenaltyStrategy" name="2 дні → 4" time="0">
+    </testcase>
+    <testcase classname="ExponentialPenaltyStrategy" name="3 дні → 8" time="0">
+    </testcase>
+    <testcase classname="ExponentialPenaltyStrategy" name="max cap = 1024" time="0">
+    </testcase>
+    <testcase classname="ExponentialPenaltyStrategy" name="ростає швидше за лінійний" time="0">
+    </testcase>
+    <testcase classname="TieredPenaltyStrategy" name="0 → 0" time="0">
+    </testcase>
+    <testcase classname="TieredPenaltyStrategy" name="негативні → 0" time="0">
+    </testcase>
+    <testcase classname="TieredPenaltyStrategy" name="1-3 дні → 5" time="0.001">
+    </testcase>
+    <testcase classname="TieredPenaltyStrategy" name="4-7 днів → 15" time="0">
+    </testcase>
+    <testcase classname="TieredPenaltyStrategy" name="8-14 днів → 30" time="0">
+    </testcase>
+    <testcase classname="TieredPenaltyStrategy" name="&gt;14 днів → 50" time="0">
+    </testcase>
+    <testcase classname="PenaltyContext" name="без дедлайну → 0" time="0">
+    </testcase>
+    <testcase classname="PenaltyContext" name="DONE → 0 навіть якщо прострочено" time="0">
+    </testcase>
+    <testcase classname="PenaltyContext" name="прострочено → штраф &gt; 0" time="0">
+    </testcase>
+    <testcase classname="PenaltyContext" name="майбутній дедлайн → 0" time="0">
+    </testcase>
+    <testcase classname="PenaltyContext" name="дозволяє замінити стратегію" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="AuthService" errors="0" failures="0" skipped="0" timestamp="2026-06-08T10:33:14" time="0.437" tests="13">
+    <testcase classname="AuthService register" name="реєструє нового користувача і повертає токен" time="0.074">
+    </testcase>
+    <testcase classname="AuthService register" name="кидає ConflictError, якщо email вже зайнятий" time="0.004">
+    </testcase>
+    <testcase classname="AuthService login" name="повертає токен при правильному паролі" time="0.126">
+    </testcase>
+    <testcase classname="AuthService login" name="кидає UnauthorizedError, якщо користувача не існує" time="0.001">
+    </testcase>
+    <testcase classname="AuthService login" name="кидає UnauthorizedError при неправильному паролі" time="0.125">
+    </testcase>
+    <testcase classname="AuthService getCurrentUser" name="повертає поточного користувача" time="0">
+    </testcase>
+    <testcase classname="AuthService getCurrentUser" name="кидає NotFoundError, якщо користувача нема" time="0">
+    </testcase>
+    <testcase classname="AuthService searchByName" name="повертає [] для порожнього запиту" time="0">
+    </testcase>
+    <testcase classname="AuthService searchByName" name="повертає [] для запиту з самих пробілів" time="0">
+    </testcase>
+    <testcase classname="AuthService searchByName" name="обрізає пробіли і викликає репозиторій" time="0.001">
+    </testcase>
+    <testcase classname="AuthService searchByName" name="повертає кілька результатів від репозиторія" time="0">
+    </testcase>
+    <testcase classname="AuthService findByName" name="делегує виклик репозиторію" time="0">
+    </testcase>
+    <testcase classname="AuthService findByName" name="повертає null, якщо репозиторій не знайшов" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="EventBus (Singleton)" errors="0" failures="0" skipped="0" timestamp="2026-06-08T10:33:15" time="0.08" tests="19">
+    <testcase classname="EventBus (Singleton)" name="завжди повертає один і той самий екземпляр" time="0">
+    </testcase>
+    <testcase classname="EventBus (Singleton)" name="reset() створює новий екземпляр" time="0">
+    </testcase>
+    <testcase classname="EventBus (Singleton)" name="notify — надсилає подію підписнику" time="0">
+    </testcase>
+    <testcase classname="EventBus (Singleton)" name="notify — не надсилає не-підписникам" time="0">
+    </testcase>
+    <testcase classname="EventBus (Singleton)" name="кілька підписників на один тип" time="0">
+    </testcase>
+    <testcase classname="EventBus (Singleton)" name="unsubscribe — перестає отримувати події" time="0">
+    </testcase>
+    <testcase classname="EventBus (Singleton)" name="getLog — зберігає всі події" time="0">
+    </testcase>
+    <testcase classname="EventBus (Singleton)" name="clearLog — очищає журнал" time="0">
+    </testcase>
+    <testcase classname="EventBus (Singleton)" name="getLog повертає копію — мутація не впливає" time="0.001">
+    </testcase>
+    <testcase classname="EventBus (Singleton)" name="payload містить тип, meta та timestamp" time="0">
+    </testcase>
+    <testcase classname="EventBus (Singleton)" name="порожній notify не кидає" time="0">
+    </testcase>
+    <testcase classname="NotificationObserver" name="зберігає отримані події" time="0">
+    </testcase>
+    <testcase classname="NotificationObserver" name="getAll повертає копію" time="0">
+    </testcase>
+    <testcase classname="NotificationObserver" name="clear() видаляє всі сповіщення" time="0">
+    </testcase>
+    <testcase classname="NotificationObserver" name="інтеграція з EventBus" time="0">
+    </testcase>
+    <testcase classname="AuditLogObserver" name="записує тип і meta" time="0.001">
+    </testcase>
+    <testcase classname="AuditLogObserver" name="накопичує кілька записів" time="0">
+    </testcase>
+    <testcase classname="AuditLogObserver" name="запис містить дату" time="0">
+    </testcase>
+    <testcase classname="AuditLogObserver" name="getEntries повертає копію" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="ProjectService" errors="0" failures="0" skipped="0" timestamp="2026-06-08T10:33:15" time="0.108" tests="12">
+    <testcase classname="ProjectService" name="створює проєкт і робить творця власником" time="0">
+    </testcase>
+    <testcase classname="ProjectService" name="ensureOwner — кидає 403, якщо користувач не власник" time="0.005">
+    </testcase>
+    <testcase classname="ProjectService" name="ensureOwner — пропускає власника" time="0">
+    </testcase>
+    <testcase classname="ProjectService" name="ensureMember — кидає 403 для не-члена" time="0">
+    </testcase>
+    <testcase classname="ProjectService" name="getById включає лічильники членів і задач" time="0">
+    </testcase>
+    <testcase classname="ProjectService" name="getById — 404 коли проєкту нема" time="0">
+    </testcase>
+    <testcase classname="ProjectService" name="addMember — заборонено для не-власника" time="0">
+    </testcase>
+    <testcase classname="ProjectService" name="addMember — конфлікт, якщо вже член" time="0.001">
+    </testcase>
+    <testcase classname="ProjectService" name="removeMember — не дозволяє видалити власника" time="0">
+    </testcase>
+    <testcase classname="ProjectService" name="getMemberRole — повертає роль або null" time="0">
+    </testcase>
+    <testcase classname="ProjectService getMembers" name="повертає членів проєкту для учасника" time="0">
+    </testcase>
+    <testcase classname="ProjectService getMembers" name="кидає 403 для не-учасника" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="TaskService" errors="0" failures="0" skipped="0" timestamp="2026-06-08T10:33:15" time="0.117" tests="9">
+    <testcase classname="TaskService" name="створює задачу після перевірки членства" time="0.001">
+    </testcase>
+    <testcase classname="TaskService" name="list — повертає пагінацію" time="0">
+    </testcase>
+    <testcase classname="TaskService" name="getById — 404 коли нема" time="0.004">
+    </testcase>
+    <testcase classname="TaskService" name="update — перевіряє членство" time="0">
+    </testcase>
+    <testcase classname="TaskService" name="delete — заборонено стороннім" time="0">
+    </testcase>
+    <testcase classname="TaskService" name="delete — дозволено OWNER" time="0">
+    </testcase>
+    <testcase classname="TaskService" name="delete — дозволено creator" time="0">
+    </testcase>
+    <testcase classname="TaskService" name="delete — дозволено assignee" time="0">
+    </testcase>
+    <testcase classname="TaskService" name="delete — 403, якщо взагалі не член" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="StatsService" errors="0" failures="0" skipped="0" timestamp="2026-06-08T10:33:15" time="0.136" tests="4">
+    <testcase classname="StatsService" name="обчислює статистику без кешу" time="0.006">
+    </testcase>
+    <testcase classname="StatsService" name="повертає кешовані дані при повторному запиті" time="0">
+    </testcase>
+    <testcase classname="StatsService" name="invalidateProjectStats очищає кеш" time="0">
+    </testcase>
+    <testcase classname="StatsService" name="повертає total = сума всіх статусів" time="0">
+    </testcase>
+  </testsuite>
+</testsuites>

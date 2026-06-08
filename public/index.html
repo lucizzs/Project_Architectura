@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bloom</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div id="app">
+
+    <!-- ─── Auth Screen ─── -->
+    <div id="screen-auth" class="screen active">
+      <div class="auth-wrap">
+        <div class="auth-side">
+          <div class="brand-block">
+            <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true">
+              <circle cx="20" cy="12" r="6" fill="currentColor" opacity=".85"/>
+              <circle cx="11" cy="24" r="6" fill="currentColor" opacity=".65"/>
+              <circle cx="29" cy="24" r="6" fill="currentColor" opacity=".65"/>
+              <circle cx="20" cy="28" r="5" fill="currentColor" opacity=".95"/>
+            </svg>
+            <div class="brand-text">Bloom</div>
+          </div>
+          <h1 class="auth-headline">Робочий простір,<br/>що поважає твій ритм.</h1>
+          <p class="auth-sub">Планування, задачі, обговорення — без зайвого шуму. Тепло, повільно, по-справжньому.</p>
+          <ul class="auth-points">
+            <li>Гнучкі режими: список, дошка, календар</li>
+            <li>Швидке створення задач з будь-якої сторінки</li>
+            <li>Коментарі та виконавці прямо в задачі</li>
+          </ul>
+        </div>
+
+        <div class="auth-form-side">
+          <div class="auth-card">
+            <div class="auth-tabs">
+              <button class="auth-tab active" data-tab="login">Увійти</button>
+              <button class="auth-tab" data-tab="register">Створити акаунт</button>
+            </div>
+
+            <form id="form-login" class="auth-form active">
+              <div class="field">
+                <label>Email</label>
+                <input type="email" id="login-email" placeholder="ти@приклад.com" required />
+              </div>
+              <div class="field">
+                <label>Пароль</label>
+                <input type="password" id="login-password" placeholder="••••••••" required />
+              </div>
+              <div id="login-error" class="form-error hidden"></div>
+              <button type="submit" class="btn-primary">Увійти</button>
+            </form>
+
+            <form id="form-register" class="auth-form">
+              <div class="field">
+                <label>Ім'я</label>
+                <input type="text" id="reg-name" placeholder="Як до тебе звертатись" required />
+              </div>
+              <div class="field">
+                <label>Email</label>
+                <input type="email" id="reg-email" placeholder="ти@приклад.com" required />
+              </div>
+              <div class="field">
+                <label>Пароль</label>
+                <input type="password" id="reg-password" placeholder="мінімум 8 символів" required />
+              </div>
+              <div id="reg-error" class="form-error hidden"></div>
+              <button type="submit" class="btn-primary">Зареєструватись</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── App Screen ─── -->
+    <div id="screen-app" class="screen">
+
+      <!-- Top bar -->
+      <header class="topbar">
+        <div class="topbar-brand">
+          <svg class="brand-mark sm" viewBox="0 0 40 40" aria-hidden="true">
+            <circle cx="20" cy="12" r="6" fill="currentColor" opacity=".85"/>
+            <circle cx="11" cy="24" r="6" fill="currentColor" opacity=".65"/>
+            <circle cx="29" cy="24" r="6" fill="currentColor" opacity=".65"/>
+            <circle cx="20" cy="28" r="5" fill="currentColor" opacity=".95"/>
+          </svg>
+          <span class="brand-name">Bloom</span>
+        </div>
+
+        <nav class="topbar-nav">
+          <button class="nav-link active" data-view="dashboard">Дашборд</button>
+          <button class="nav-link" data-view="projects">Проєкти</button>
+          <button class="nav-link" data-view="my-tasks">Мої задачі</button>
+          <button class="nav-link" data-view="calendar">Календар</button>
+        </nav>
+
+        <div class="topbar-right">
+          <button class="btn-soft" id="btn-quick-add">+ Швидко додати</button>
+          <div class="user-chip" id="user-chip">
+            <span class="user-avatar" id="user-avatar">·</span>
+            <span class="user-info">
+              <span class="user-name" id="user-name">—</span>
+              <span class="user-email" id="user-email">—</span>
+            </span>
+            <button class="btn-logout" id="btn-logout" title="Вийти">Вийти</button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main -->
+      <main class="main">
+
+        <!-- Dashboard -->
+        <div id="view-dashboard" class="view active">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title" id="greeting">Привіт</h1>
+              <div class="view-sub" id="today-label">—</div>
+            </div>
+          </div>
+
+          <div class="stats-row">
+            <div class="stat-card">
+              <div class="stat-label">Проєктів</div>
+              <div class="stat-value" id="stat-projects">—</div>
+              <div class="stat-hint">всього в роботі</div>
+            </div>
+            <div class="stat-card tone-peach">
+              <div class="stat-label">Активних задач</div>
+              <div class="stat-value" id="stat-tasks-active">—</div>
+              <div class="stat-hint">не виконані</div>
+            </div>
+            <div class="stat-card tone-sage">
+              <div class="stat-label">Виконано</div>
+              <div class="stat-value" id="stat-tasks-done">—</div>
+              <div class="stat-hint">за весь час</div>
+            </div>
+            <div class="stat-card tone-clay">
+              <div class="stat-label">Прострочено</div>
+              <div class="stat-value" id="stat-tasks-overdue">—</div>
+              <div class="stat-hint">потребують уваги</div>
+            </div>
+          </div>
+
+          <div class="dashboard-cols">
+            <section class="dash-section">
+              <div class="section-head">
+                <h2 class="section-title">На сьогодні</h2>
+                <span class="section-meta" id="today-count">—</span>
+              </div>
+              <div id="dashboard-today" class="tasks-list"></div>
+            </section>
+
+            <section class="dash-section">
+              <div class="section-head">
+                <h2 class="section-title">Нещодавні проєкти</h2>
+              </div>
+              <div id="dashboard-projects" class="projects-list"></div>
+            </section>
+          </div>
+        </div>
+
+        <!-- Projects -->
+        <div id="view-projects" class="view">
+          <div class="view-header">
+            <h1 class="view-title">Проєкти</h1>
+            <button class="btn-primary" id="btn-new-project">+ Новий проєкт</button>
+          </div>
+          <div id="projects-list" class="projects-list"></div>
+        </div>
+
+        <!-- Project Detail -->
+        <div id="view-project-detail" class="view">
+          <div class="view-header">
+            <button class="btn-ghost" id="btn-back-projects">← До проєктів</button>
+            <h1 class="view-title" id="project-detail-title">Проєкт</h1>
+            <div class="view-actions">
+              <button class="btn-danger-ghost" id="btn-delete-project">Видалити</button>
+              <button class="btn-primary" id="btn-new-task">+ Задача</button>
+            </div>
+          </div>
+          <div class="project-meta" id="project-detail-meta"></div>
+
+          <div class="mode-toolbar">
+            <div class="mode-switch">
+              <button class="mode-btn active" data-mode="list">Список</button>
+              <button class="mode-btn" data-mode="board">Дошка</button>
+              <button class="mode-btn" data-mode="calendar">Календар</button>
+            </div>
+            <div class="filter-group">
+              <select id="filter-priority" class="filter-select">
+                <option value="">Усі пріоритети</option>
+                <option value="URGENT">Терміновий</option>
+                <option value="HIGH">Високий</option>
+                <option value="MEDIUM">Середній</option>
+                <option value="LOW">Низький</option>
+              </select>
+              <select id="filter-status" class="filter-select">
+                <option value="">Усі статуси</option>
+                <option value="TODO">Todo</option>
+                <option value="IN_PROGRESS">В процесі</option>
+                <option value="IN_REVIEW">На перевірці</option>
+                <option value="DONE">Готово</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- LIST MODE -->
+          <div id="mode-list" class="mode-pane active">
+            <div class="task-table">
+              <div class="task-table-head">
+                <div></div>
+                <div>Назва</div>
+                <div>Пріоритет</div>
+                <div>Виконавець</div>
+                <div>Дедлайн</div>
+                <div>Статус</div>
+              </div>
+              <div id="task-list-body" class="task-table-body"></div>
+              <div class="quick-add-row">
+                <input id="quick-task-input" placeholder="+ Швидко додати задачу й Enter…" />
+              </div>
+            </div>
+          </div>
+
+          <!-- BOARD MODE -->
+          <div id="mode-board" class="mode-pane">
+            <div class="kanban" id="kanban-board">
+              <div class="kanban-col" data-status="TODO">
+                <div class="kanban-col-header"><span class="col-dot dot-todo"></span> Todo <span class="col-count" id="count-TODO">0</span></div>
+                <div class="kanban-cards" id="col-TODO"></div>
+              </div>
+              <div class="kanban-col" data-status="IN_PROGRESS">
+                <div class="kanban-col-header"><span class="col-dot dot-inprogress"></span> В процесі <span class="col-count" id="count-IN_PROGRESS">0</span></div>
+                <div class="kanban-cards" id="col-IN_PROGRESS"></div>
+              </div>
+              <div class="kanban-col" data-status="IN_REVIEW">
+                <div class="kanban-col-header"><span class="col-dot dot-inreview"></span> На перевірці <span class="col-count" id="count-IN_REVIEW">0</span></div>
+                <div class="kanban-cards" id="col-IN_REVIEW"></div>
+              </div>
+              <div class="kanban-col" data-status="DONE">
+                <div class="kanban-col-header"><span class="col-dot dot-done"></span> Готово <span class="col-count" id="count-DONE">0</span></div>
+                <div class="kanban-cards" id="col-DONE"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CALENDAR MODE (in project) -->
+          <div id="mode-calendar" class="mode-pane">
+            <div class="cal-toolbar">
+              <button class="btn-ghost" id="cal-prev">←</button>
+              <div class="cal-month" id="cal-month">—</div>
+              <button class="btn-ghost" id="cal-next">→</button>
+            </div>
+            <div class="calendar" id="project-calendar"></div>
+          </div>
+        </div>
+
+        <!-- Task Detail -->
+        <div id="view-task-detail" class="view">
+          <div class="view-header">
+            <button class="btn-ghost" id="btn-back-project">← Назад</button>
+            <div class="view-actions">
+              <button class="btn-ghost" id="btn-edit-task-static">Редагувати</button>
+              <button class="btn-danger-ghost" id="btn-delete-task">Видалити</button>
+            </div>
+          </div>
+          <div class="task-detail">
+            <div class="task-detail-main">
+              <div class="task-status-row" id="task-status-row"></div>
+              <h2 class="task-detail-title" id="task-detail-title"></h2>
+              <p class="task-detail-desc" id="task-detail-desc"></p>
+              <div class="task-detail-meta" id="task-detail-meta"></div>
+
+              <div class="status-change-row" id="status-change-row"></div>
+
+              <div class="comments-section">
+                <h3 class="section-title">Обговорення</h3>
+                <div id="comments-list" class="comments-list"></div>
+                <div class="comment-form">
+                  <textarea id="comment-text" placeholder="Що думаєш? Напиши коментар…"></textarea>
+                  <button class="btn-primary" id="btn-add-comment">Надіслати</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- My Tasks -->
+        <div id="view-my-tasks" class="view">
+          <div class="view-header">
+            <h1 class="view-title">Мої задачі</h1>
+            <div class="view-sub">Усе, де ти виконавець або автор</div>
+          </div>
+          <div id="my-tasks-groups" class="grouped-tasks"></div>
+        </div>
+
+        <!-- Calendar (global) -->
+        <div id="view-calendar" class="view">
+          <div class="view-header">
+            <h1 class="view-title">Календар</h1>
+            <div class="cal-toolbar">
+              <button class="btn-ghost" id="gcal-prev">←</button>
+              <div class="cal-month" id="gcal-month">—</div>
+              <button class="btn-ghost" id="gcal-next">→</button>
+            </div>
+          </div>
+          <div class="calendar" id="global-calendar"></div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal-overlay" class="modal-overlay hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-title">—</h3>
+        <button class="modal-close" id="modal-close">×</button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

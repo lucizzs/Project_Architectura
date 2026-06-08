@@ -1,0 +1,196 @@
+@startuml TaskFlow_ClassDiagram
+skinparam classAttributeIconSize 0
+skinparam groupInheritance 2
+
+' ── STRATEGY PATTERN ────────────────────────────────────────────────────────
+package "Strategy Pattern" #ead8cc {
+
+  interface IPriorityStrategy {
+    +score(task: Task): number
+  }
+
+  class PriorityFieldStrategy implements IPriorityStrategy {
+    +score(task): number
+  }
+  class DeadlineStrategy implements IPriorityStrategy {
+    +score(task): number
+  }
+  class HybridPriorityStrategy implements IPriorityStrategy {
+    -fieldWeight: number
+    +score(task): number
+  }
+
+  interface IPenaltyStrategy {
+    +penalty(daysOverdue: number): number
+  }
+
+  class LinearPenaltyStrategy implements IPenaltyStrategy {
+    +penalty(days): number
+  }
+  class ExponentialPenaltyStrategy implements IPenaltyStrategy {
+    +penalty(days): number
+  }
+  class TieredPenaltyStrategy implements IPenaltyStrategy {
+    +penalty(days): number
+  }
+
+  class TaskPriorityContext {
+    -strategy: IPriorityStrategy
+    +setStrategy(s): void
+    +rank(tasks): Task[]
+  }
+
+  class PenaltyContext {
+    -strategy: IPenaltyStrategy
+    +setStrategy(s): void
+    +calculate(task): number
+  }
+
+  TaskPriorityContext o-- IPriorityStrategy
+  PenaltyContext o-- IPenaltyStrategy
+}
+
+' ── OBSERVER PATTERN ────────────────────────────────────────────────────────
+package "Observer + Singleton Pattern" #d9bfb0 {
+
+  interface IObserver {
+    +handle(event: EventPayload): void
+  }
+
+  class EventBus {
+    -{static} _instance: EventBus
+    -subscribers: Map<EventType, IObserver[]>
+    -_log: EventPayload[]
+    +{static} getInstance(): EventBus
+    +{static} reset(): void
+    +subscribe(type, observer): void
+    +unsubscribe(type, observer): void
+    +notify(type, meta): void
+    +getLog(): EventPayload[]
+    +clearLog(): void
+  }
+
+  class NotificationObserver implements IObserver {
+    -notifications: EventPayload[]
+    +handle(event): void
+    +getAll(): EventPayload[]
+    +clear(): void
+  }
+
+  class AuditLogObserver implements IObserver {
+    -entries: AuditEntry[]
+    +handle(event): void
+    +getEntries(): AuditEntry[]
+  }
+
+  EventBus "1" o-- "0..*" IObserver : notifies >
+}
+
+' ── REPOSITORIES ────────────────────────────────────────────────────────────
+package "In-Memory Repositories" #f0e4d8 {
+
+  class UserRepository {
+    -store: Map<string, User>
+    +create(data): Promise<User>
+    +findById(id): Promise<User|null>
+    +findByEmail(email): Promise<User|null>
+    +existsByEmail(email): Promise<boolean>
+    +searchByName(query): Promise<User[]>
+  }
+
+  class ProjectRepository {
+    -projects: Map<string, Project>
+    -members: Map<string, ProjectMember>
+    +create(data): Promise<Project>
+    +findById(id): Promise<Project|null>
+    +findAllForUser(userId): Promise<Project[]>
+    +addMember(projectId, userId): Promise<ProjectMember>
+    +findMembers(projectId): Promise<Member[]>
+  }
+
+  class TaskRepository {
+    -store: Map<string, Task>
+    +create(projectId, userId, dto): Promise<Task>
+    +findById(id): Promise<Task|null>
+    +findManyByProject(id, filter): Promise<Paginated>
+    +update(id, dto): Promise<Task>
+    +countByStatus(projectId): Promise<Record>
+  }
+
+  class CommentRepository {
+    -store: Map<string, Comment>
+    +create(taskId, authorId, content): Promise<Comment>
+    +findByTask(taskId): Promise<Comment[]>
+    +findById(id): Promise<Comment|null>
+    +delete(id): Promise<void>
+  }
+
+  class InMemoryRedis {
+    -store: Map<string, CacheEntry>
+    +get(key): Promise<string|null>
+    +setex(key, ttl, value): Promise<void>
+    +del(key): Promise<number>
+  }
+}
+
+' ── SERVICES ────────────────────────────────────────────────────────────────
+package "Services" #fdf8f5 {
+
+  class AuthService {
+    -users: UserRepository
+    +register(dto): Promise<AuthResponseDto>
+    +login(dto): Promise<AuthResponseDto>
+    +getCurrentUser(id): Promise<User>
+    +searchByName(query): Promise<User[]>
+  }
+
+  class ProjectService {
+    -projects: ProjectRepository
+    -users: UserRepository
+    +create(userId, dto): Promise<Project>
+    +getById(userId, id): Promise<Project>
+    +listForUser(userId): Promise<Project[]>
+    +addMember(userId, projectId, newUserId): void
+    +ensureMember(projectId, userId): void
+    +ensureOwner(projectId, userId): void
+  }
+
+  class TaskService {
+    -tasks: TaskRepository
+    -projectService: ProjectService
+    +create(userId, projectId, dto): Promise<Task>
+    +listByProject(userId, projectId, filter): Promise<Paginated>
+    +update(userId, taskId, dto): Promise<Task>
+    +delete(userId, taskId): void
+  }
+
+  class CommentService {
+    -comments: CommentRepository
+    -tasks: TaskRepository
+    -projectService: ProjectService
+    +create(userId, taskId, dto): Promise<Comment>
+    +listByTask(userId, taskId): Promise<Comment[]>
+    +delete(userId, commentId): void
+  }
+
+  class StatsService {
+    -tasks: TaskRepository
+    -projectService: ProjectService
+    -redis: InMemoryRedis
+    +getProjectStats(userId, projectId): Promise<Stats>
+    +invalidateProjectStats(projectId): void
+  }
+
+  AuthService --> UserRepository
+  ProjectService --> ProjectRepository
+  ProjectService --> UserRepository
+  TaskService --> TaskRepository
+  TaskService --> ProjectService
+  CommentService --> CommentRepository
+  CommentService --> TaskRepository
+  CommentService --> ProjectService
+  StatsService --> TaskRepository
+  StatsService --> ProjectService
+  StatsService --> InMemoryRedis
+}
+@enduml

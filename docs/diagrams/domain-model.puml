@@ -1,0 +1,100 @@
+@startuml TaskFlow_DomainModel
+skinparam classAttributeIconSize 0
+skinparam class {
+  BackgroundColor #fdf8f5
+  BorderColor #8a6253
+  ArrowColor #6d4d40
+}
+
+class User {
+  +id: string
+  +email: string
+  +name: string
+  +passwordHash: string
+  +createdAt: Date
+  +updatedAt: Date
+}
+
+class Project {
+  +id: string
+  +name: string
+  +description: string | null
+  +ownerId: string
+  +createdAt: Date
+  +updatedAt: Date
+}
+
+class ProjectMember {
+  +id: string
+  +projectId: string
+  +userId: string
+  +role: ProjectRole
+  +joinedAt: Date
+}
+
+enum ProjectRole {
+  OWNER
+  MEMBER
+}
+
+class Task {
+  +id: string
+  +title: string
+  +description: string | null
+  +status: TaskStatus
+  +priority: TaskPriority
+  +dueDate: Date | null
+  +projectId: string
+  +assigneeId: string | null
+  +createdById: string
+  +createdAt: Date
+  +updatedAt: Date
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  IN_REVIEW
+  DONE
+  CANCELLED
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+class Comment {
+  +id: string
+  +content: string
+  +taskId: string
+  +authorId: string
+  +createdAt: Date
+  +updatedAt: Date
+}
+
+class ProjectStats {
+  +projectId: string
+  +byStatus: Record<string, number>
+  +total: number
+  +cached: boolean
+}
+
+User "1" -- "0..*" Project : owns >
+User "0..*" -- "0..*" Project : member of >
+(User, Project) .. ProjectMember
+
+Project "1" *-- "0..*" Task : contains >
+Task "1" *-- "0..*" Comment : has >
+
+User "1" -- "0..*" Task : assigned to >
+User "1" -- "0..*" Comment : writes >
+
+Project "1" -- "1" ProjectStats : has stats >
+
+ProjectMember -- ProjectRole
+Task -- TaskStatus
+Task -- TaskPriority
+@enduml

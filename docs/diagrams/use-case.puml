@@ -1,0 +1,89 @@
+@startuml TaskFlow_UseCaseDiagram
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor "Користувач" as User
+actor "Власник проєкту" as Owner
+actor "Учасник проєкту" as Member
+
+rectangle "TaskFlow — Система управління задачами" {
+
+  package "Автентифікація" {
+    usecase "UC-01: Реєстрація" as UC01
+    usecase "UC-02: Вхід у систему" as UC02
+    usecase "UC-03: Перегляд профілю" as UC03
+  }
+
+  package "Управління проєктами" {
+    usecase "UC-04: Створення проєкту" as UC04
+    usecase "UC-05: Редагування проєкту" as UC05
+    usecase "UC-06: Видалення проєкту" as UC06
+    usecase "UC-07: Перегляд списку проєктів" as UC07
+    usecase "UC-08: Додавання учасника" as UC08
+    usecase "UC-09: Видалення учасника" as UC09
+    usecase "UC-10: Перегляд учасників" as UC10
+  }
+
+  package "Управління задачами" {
+    usecase "UC-11: Створення задачі" as UC11
+    usecase "UC-12: Редагування задачі" as UC12
+    usecase "UC-13: Зміна статусу задачі" as UC13
+    usecase "UC-14: Видалення задачі" as UC14
+    usecase "UC-15: Перегляд задач (Kanban)" as UC15
+    usecase "UC-16: Фільтрація задач" as UC16
+    usecase "UC-17: Пріоритизація (Strategy)" as UC17
+    usecase "UC-18: Нарахування штрафів (Strategy)" as UC18
+  }
+
+  package "Коментарі та аналітика" {
+    usecase "UC-19: Додавання коментаря" as UC19
+    usecase "UC-20: Видалення коментаря" as UC20
+    usecase "UC-21: Перегляд статистики" as UC21
+    usecase "UC-22: Перегляд мoїх задач" as UC22
+  }
+}
+
+User --> UC01
+User --> UC02
+User --> UC03
+
+Owner --> UC04
+Owner --> UC05
+Owner --> UC06
+Owner --> UC07
+Owner --> UC08
+Owner --> UC09
+Owner --> UC10
+Owner --> UC11
+Owner --> UC14
+Owner --> UC21
+
+Member --> UC07
+Member --> UC11
+Member --> UC12
+Member --> UC13
+Member --> UC15
+Member --> UC16
+Member --> UC19
+Member --> UC20
+Member --> UC22
+
+UC11 ..> UC17 : <<include>>
+UC18 ..> UC13 : <<extend>>
+UC16 ..> UC15 : <<include>>
+
+note right of UC17
+  Три алгоритми:
+  - PriorityField
+  - Deadline
+  - Hybrid (60/40)
+end note
+
+note right of UC18
+  Три алгоритми:
+  - Linear (1б/день)
+  - Exponential (2^days)
+  - Tiered (5/15/30/50)
+end note
+@enduml
